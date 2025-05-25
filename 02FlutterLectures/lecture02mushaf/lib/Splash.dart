@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lecture02mushaf/ButtonSCR.dart';
 
 import 'IndexSurahSCR.dart';
 
@@ -24,7 +25,7 @@ class _MeriSplashSCRState extends State<MeriSplashSCR> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => IndexSurahSCR(),
+              builder: (context) => Buttonscr(),
             ));
       },
     );

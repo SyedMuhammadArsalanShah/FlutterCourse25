@@ -50,10 +50,76 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(controller: email),
-          TextField(controller: pass),
-          SizedBox(height: 10,),
+          Container(
+            color: Colors.indigo[900],
+            height: 300,
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                "Login Page",
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: email,
+              keyboardType: TextInputType.emailAddress,
+              // enabled: false,
+              decoration: InputDecoration(
+                suffixIcon: Icon(Icons.info),
+                prefix: Icon(Icons.email),
+                hintText: "someone@abc.com",
+                label: Text("Enter Your Email"),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.indigo, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.teal, width: 2),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.grey, width: 2),
+                ),
+              ),
+            ),
+          ),
+
+          // SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: pass,
+              keyboardType: TextInputType.text,
+              obscureText: true,
+              obscuringCharacter: "#",
+              // enabled: false,
+              decoration: InputDecoration(
+                suffixIcon: Icon(Icons.remove_red_eye_rounded),
+                prefix: Icon(Icons.password),
+                hintText: "alphaNumeric",
+                label: Text("Enter Your Password"),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.indigo, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.teal, width: 2),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  borderSide: BorderSide(color: Colors.grey, width: 2),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               String emailaddress = email.text.toString();
@@ -61,10 +127,45 @@ class _LoginState extends State<Login> {
 
               print("My Email is " + emailaddress);
               print("My Password is " + password);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home(emailaddress)),
+              );
             },
             child: Text("Login"),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  var email;
+  Home(this.email, {super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(widget.email),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Logout"),
+            ),
+          ],
+        ),
       ),
     );
   }

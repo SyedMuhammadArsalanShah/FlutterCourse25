@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "893811005160",
+    "project_id": "achybachy-bc64f",
+    "storage_bucket": "achybachy-bc64f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893811005160:android:8e6a6c354c73c5ed379b5d",
+        "android_client_info": {
+          "package_name": "com.example.lecture10firebase_db"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy-wTlLL6Lyr-Ky8tfn1UCflfMgBtgSP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

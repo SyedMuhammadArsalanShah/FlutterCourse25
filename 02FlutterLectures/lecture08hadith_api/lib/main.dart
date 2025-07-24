@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
+
 void main() {
   runApp(const MyApp());
 }
@@ -37,9 +38,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
-
 class BooksSCR extends StatefulWidget {
   const BooksSCR({super.key});
 
@@ -48,13 +46,14 @@ class BooksSCR extends StatefulWidget {
 }
 
 class _BooksSCRState extends State<BooksSCR> {
-  
-   Map map = {};
+  Map map = {};
   List list = [];
 
   void apicallkardo() async {
     http.Response meraresponse = await http.get(
-      Uri.parse("https://hadithapi.com/api/books?apiKey=\$2y\$10\$BylaBcXs5Lw7ZOtYmQ3PXO1x15zpp26oc1FeGktdmF6YeYoRd88e"),
+      Uri.parse(
+        "https://hadithapi.com/api/books?apiKey=\$2y\$10\$BylaBcXs5Lw7ZOtYmQ3PXO1x15zpp26oc1FeGktdmF6YeYoRd88e",
+      ),
     );
     if (meraresponse.statusCode == 200) {
       setState(() {
@@ -63,7 +62,6 @@ class _BooksSCRState extends State<BooksSCR> {
       });
     }
   }
-
 
   void initState() {
     // TODO: implement initState
@@ -79,14 +77,16 @@ class _BooksSCRState extends State<BooksSCR> {
         itemBuilder: (context, index) {
           return ListTile(
             onTap: () {
-             
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChaptersSCR(list[index]["bookSlug"]),
+                ),
+              );
             },
             leading: CircleAvatar(child: Text("${index + 1}")),
-            title: Text(
-              list[index]["bookName"],
-            ),
+            title: Text(list[index]["bookName"]),
             subtitle: Text(list[index]["writerName"]),
-            
           );
         },
       ),
@@ -94,3 +94,119 @@ class _BooksSCRState extends State<BooksSCR> {
   }
 }
 
+class ChaptersSCR extends StatefulWidget {
+  var bookSlug;
+  ChaptersSCR(this.bookSlug, {super.key});
+
+  @override
+  State<ChaptersSCR> createState() => _ChaptersSCRState();
+}
+
+class _ChaptersSCRState extends State<ChaptersSCR> {
+  Map map = {};
+  List list = [];
+
+  void apicallkardo() async {
+    http.Response meraresponse = await http.get(
+      Uri.parse(
+        "https://hadithapi.com/api/${widget.bookSlug}/chapters?apiKey=\$2y\$10\$BylaBcXs5Lw7ZOtYmQ3PXO1x15zpp26oc1FeGktdmF6YeYoRd88e",
+      ),
+    );
+    if (meraresponse.statusCode == 200) {
+      setState(() {
+        map = jsonDecode(meraresponse.body);
+        list = map["chapters"];
+      });
+    }
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apicallkardo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => HadithsSCR(
+                        list[index]["bookSlug"],
+                        list[index]["chapterNumber"],
+                      ),
+                ),
+              );
+            },
+            leading: CircleAvatar(child: Text("${index + 1}")),
+            title: Text(list[index]["chapterArabic"]),
+            subtitle: Text(list[index]["chapterUrdu"]),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class HadithsSCR extends StatefulWidget {
+  var bookSlug;
+  var chapterNum;
+  HadithsSCR(this.bookSlug, this.chapterNum, {super.key});
+
+  @override
+  State<HadithsSCR> createState() => _HadithsSCRState();
+}
+
+class _HadithsSCRState extends State<HadithsSCR> {
+  Map map = {};
+  List list = [];
+
+  void apicallkardo() async {
+    http.Response meraresponse = await http.get(
+      Uri.parse(
+        "https://hadithapi.com/public/api/hadiths?apiKey=\$2y\$10\$BylaBcXs5Lw7ZOtYmQ3PXO1x15zpp26oc1FeGktdmF6YeYoRd88e&book=${widget.bookSlug}&chapter=${widget.chapterNum}&paginate=100000",
+      ),
+    );
+    if (meraresponse.statusCode == 200) {
+      setState(() {
+        map = jsonDecode(meraresponse.body);
+        list = map["hadiths"]["data"];
+      });
+    }
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apicallkardo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+          
+            title: Text(list[index]["hadithArabic"]),
+            subtitle: Column(
+              children: [
+                
+                Text(list[index]["hadithEnglish"]),
+                Text(list[index]["hadithUrdu"]),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

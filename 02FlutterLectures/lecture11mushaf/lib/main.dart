@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quran/quran.dart' as quran;
 void main() {
   runApp(MyApp());
 }
@@ -39,7 +40,7 @@ class _SplashSCRState extends State<SplashSCR> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.indigo[900],
-      body: Center(child: Text("Mushaf")),
+      body: Center(child: Text("مصحف", style: GoogleFonts.arefRuqaa(color: Colors.white,fontSize: 50),)),
     );
   }
 }
@@ -82,12 +83,20 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text("Coming Soon INSHAALLAH"),
-        ),
-      ),
+      body: ListView.builder(
+        itemCount: quran.totalSurahCount,
+        itemBuilder: (context, index) {
+        return ListTile(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  DetailQuran(index+1)));
+          },
+          leading: CircleAvatar(child: Text("${index+1}"),),
+          title: Text(quran.getSurahNameArabic(index+1),style: GoogleFonts.amiriQuran(),),
+          subtitle: Text(quran.getSurahNameEnglish(index+1)),
+          trailing: Text(quran.getVerseCount(index+1).toString()),
+          
+          );
+      },)
     );
   }
 }
@@ -103,12 +112,101 @@ class _SurahIndexTSCRState extends State<SurahIndexTSCR> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text(" Translation Coming Soon INSHAALLAH"),
-        ),
-      ),
+      body: ListView.builder(
+        itemCount: quran.totalSurahCount,
+        itemBuilder: (context, index) {
+        return ListTile(
+            onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  DetailQuranT(index+1)));
+          },
+          leading: CircleAvatar(child: Text("${index+1}"),),
+          title: Text(quran.getSurahName(index+1)),
+          subtitle: Text(quran.getSurahNameEnglish(index+1)),
+          trailing: Text(quran.getVerseCount(index+1).toString()),
+          
+          );
+      },)
     );
   }
+}
+
+
+
+
+class DetailQuran extends StatefulWidget {
+  var surahNum;
+  DetailQuran(this.surahNum, {super.key});
+
+  @override
+  State<DetailQuran> createState() => _DetailQuranState();
+}
+
+class _DetailQuranState extends State<DetailQuran> {
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+        appBar: AppBar(
+          title: Text(quran.getSurahName(widget.surahNum)),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: ListView.builder(
+              itemCount: quran.getVerseCount(widget.surahNum),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    quran.getVerse(widget.surahNum, index + 1, verseEndSymbol: true),
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.amiri(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+    );
+  }
+}
+
+
+class DetailQuranT extends StatefulWidget {
+var surahNum;
+DetailQuranT(this.surahNum,{super.key});
+
+  @override
+  State<DetailQuranT> createState() => _DetailQuranTState();
+}
+
+class _DetailQuranTState extends State<DetailQuranT> {
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+        appBar: AppBar(
+          title: Text(quran.getSurahName(widget.surahNum)),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: ListView.builder(
+              itemCount: quran.getVerseCount(widget.surahNum),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    quran.getVerse(widget.surahNum, index + 1, verseEndSymbol: true),
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.amiri(),
+                  ),
+                     subtitle: Text(
+                    quran.getVerseTranslation(widget.surahNum, index + 1, translation: quran.Translation.urdu),
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.notoNastaliqUrdu(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+    );
+   }
 }

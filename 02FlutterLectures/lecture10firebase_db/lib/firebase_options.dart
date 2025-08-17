@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,20 +46,34 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBy-wTlLL6Lyr-Ky8tfn1UCflfMgBtgSP4',
-    appId: '1:893811005160:android:8e6a6c354c73c5ed379b5d',
-    messagingSenderId: '893811005160',
-    projectId: 'achybachy-bc64f',
-    storageBucket: 'achybachy-bc64f.firebasestorage.app',
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAI814xogkD9nilRlmVSRpB0FKWcpPpgoU',
+    appId: '1:554491010594:web:4ea9f6f6ae684edbbc747b',
+    messagingSenderId: '554491010594',
+    projectId: 'lecture10-82f37',
+    authDomain: 'lecture10-82f37.firebaseapp.com',
+    storageBucket: 'lecture10-82f37.firebasestorage.app',
+    measurementId: 'G-TBGB6JNEW6',
+    databaseURL: "https://lecture10-82f37-default-rtdb.firebaseio.com"
   );
 
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDoLvJbByVLNDTTCuHnlmMPWqUyCe3_PSA',
+    appId: '1:554491010594:android:ef4658c73bede99abc747b',
+    messagingSenderId: '554491010594',
+    projectId: 'lecture10-82f37',
+    storageBucket: 'lecture10-82f37.firebasestorage.app',
+    databaseURL: "https://lecture10-82f37-default-rtdb.firebaseio.com"
+    )
+  ;
+
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA2UpVcWtb4sExbwqzFV_bS-4cBcdWdxZQ',
-    appId: '1:893811005160:ios:f67f121f0aa3baec379b5d',
-    messagingSenderId: '893811005160',
-    projectId: 'achybachy-bc64f',
-    storageBucket: 'achybachy-bc64f.firebasestorage.app',
+    apiKey: 'AIzaSyClnnIkK1nHzToCfBU4Sl7lZIZ7pxu_Noo',
+    appId: '1:554491010594:ios:c9752ef8a2659056bc747b',
+    messagingSenderId: '554491010594',
+    projectId: 'lecture10-82f37',
+    storageBucket: 'lecture10-82f37.firebasestorage.app',
     iosBundleId: 'com.example.lecture10firebaseDb',
+    databaseURL: "https://lecture10-82f37-default-rtdb.firebaseio.com"
   );
 }

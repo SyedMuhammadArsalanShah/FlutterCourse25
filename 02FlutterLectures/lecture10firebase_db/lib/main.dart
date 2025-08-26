@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:lecture10firebase_db/firebase_options.dart';
 
@@ -370,7 +371,9 @@ class _HomeSCRState extends State<HomeSCR> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
-
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref(
+    "students",
+  );
   final key = FirebaseAuth.instance.currentUser!.uid;
 
   int id = 1;
@@ -407,6 +410,99 @@ class _HomeSCRState extends State<HomeSCR> {
               },
             ),
           ),
+
+          // stream builder
+          //   Expanded(
+          //     child: StreamBuilder(
+          //       stream: databaseReference.child(key).onValue,
+          //       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+          //         if (!snapshot.hasData) {
+          //           return Center(child: CircularProgressIndicator());
+          //         } else {
+          //           Map<dynamic, dynamic> map =
+          //               snapshot.data!.snapshot.value as dynamic;
+          //           List<dynamic> item = map.values.toList();
+          //           return ListView.builder(
+          //             itemCount: snapshot.data!.snapshot.children.length,
+          //             itemBuilder: (context, index) {
+          //               return ListTile(
+          //                 title: Text(item[index]["Title"].toString()),
+          //                 subtitle: Text(item[index]["Description"].toString()),
+
+          //               );
+          //             },
+          //           );
+          //         }
+          //       },
+          //     ),
+          //   ),
+
+          //  firebase animated list
+          Expanded(
+            child: FirebaseAnimatedList(
+              query: databaseReference.child(key),
+              itemBuilder: (context, snapshot, animation, index) {
+                String title = snapshot.child("Title").value.toString();
+                if (searchController.text.isEmpty) {
+                  return ListTile(
+                    title: Text(snapshot.child("Title").value.toString()),
+                    subtitle: Text(
+                      snapshot.child("Description").value.toString(),
+                    ),
+                   trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            final id = snapshot.child("ID").value.toString();
+
+                            databaseReference.child(key).child(id).remove();
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            final id = snapshot.child("ID").value.toString();
+                            meraModal(int.parse(id));
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (title.contains(searchController.text.toString())) {
+                  return ListTile(
+                    title: Text(snapshot.child("Title").value.toString()),
+                    subtitle: Text(
+                      snapshot.child("Description").value.toString(),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            final id = snapshot.child("ID").value.toString();
+
+                            databaseReference.child(key).child(id).remove();
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            final id = snapshot.child("ID").value.toString();
+                            meraModal(int.parse(id));
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          ),
         ],
       ),
 
@@ -420,6 +516,8 @@ class _HomeSCRState extends State<HomeSCR> {
   }
 
   void meraModal(var postID) {
+    titleController.clear();
+    descController.clear();
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -448,7 +546,7 @@ class _HomeSCRState extends State<HomeSCR> {
                 onPressed: () async {
                   String title = titleController.text.toString();
                   String desc = descController.text.toString();
-                  DatabaseReference databaseReference = FirebaseDatabase.instance.ref("students");
+
                   if (postID == null) {
                     // createData(data);
 
@@ -469,9 +567,25 @@ class _HomeSCRState extends State<HomeSCR> {
                         .onError((error, stackTrace) {
                           print("failed task ");
                         });
+                  }else{
+                      await databaseReference
+                        .child(key)
+                        .child("$postID")
+                        .update({
+                          "ID": postID,
+                          "Title": titleController.text,
+                          "Description": descController.text,
+                          "DateOfPost": DateTime.now().toString(),
+                        })
+                        .then((value) {
+                          print("Successfully updated");
+                        })
+                        .onError((error, stackTrace) {
+                          print("failed task ");
+                        });
                   }
                 },
-                child: Text("ADD"),
+                child: postID==null? Text("ADD"):Text("Update"),
               ),
             ],
           ),
